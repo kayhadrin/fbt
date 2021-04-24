@@ -5,6 +5,7 @@
  *
  * @emails oncall+internationalization
  * @format
+ * @flow strict
  */
 
 'use strict';
@@ -14,7 +15,7 @@ const tiger = new Tiger(Tiger.L128, 0, true);
 
 /**
  * Example use:
- *   node babel-plugin-fbt/bin/collectFBT.js --hash-module 'fb-tiger-hash/src/hashPhrases' ...
+ *   yarn fbt-collect --hash-module 'fb-tiger-hash/src/hashPhrases' ...
  *
  * Takes fbt callsite data where each entry in the following array
  * represents one individual fbt callsite:
@@ -37,7 +38,12 @@ const tiger = new Tiger(Tiger.L128, 0, true);
  *   ["hash1", "hash2", ...], // hashes for strings of phrase N
  * ]
  */
-function hashPhrases(phrases) {
+function hashPhrases(
+  phrases /*: $ReadOnlyArray<{
+    desc: string,
+    texts: $ReadOnlyArray<string>,
+  }> */,
+) /*: Array<Array<string>> */ {
   return phrases.map(phrase =>
     phrase.texts.map(text => tiger.hash(text + ':::' + phrase.desc + ':')),
   );

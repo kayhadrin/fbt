@@ -19,6 +19,8 @@
 class FbtResultBase implements IFbtResultBase {
   _contents: $NestedFbtContentItems;
   _stringValue: ?string;
+  // Helps detect infinite recursion cycles with toString()
+  _isSerializing: boolean;
 
   // __errorListener is given an extra "private" underscore to prevent munging
   // (https://fburl.com/munge) of the member.  We access the member in a
@@ -73,6 +75,7 @@ class FbtResultBase implements IFbtResultBase {
   ) {
     this._contents = contents;
     this.__errorListener = errorListener;
+    this._isSerializing = false;
     this._stringValue = null;
   }
 
@@ -85,6 +88,25 @@ class FbtResultBase implements IFbtResultBase {
   }
 
   toString(): string {
+    if (Object.isFrozen(this)) {
+      // we can't alter this._isSerializing
+      // so let's just return the string and risk infinite recursion...
+      return this._toString();
+    }
+    // Prevent risk of infinite recursions if the error listener or nested contents toString()
+    // reenters this method on the same instance
+    if (this._isSerializing) {
+      return '<<Reentering fbt.toString() is forbidden>>';
+    }
+    this._isSerializing = true;
+    try {
+      return this._toString();
+    } finally {
+      this._isSerializing = false;
+    }
+  }
+
+  _toString(): string {
     if (this._stringValue != null) {
       return this._stringValue;
     }
@@ -173,10 +195,11 @@ class FbtResultBase implements IFbtResultBase {
   'trimRight',
 ].forEach(methodName => {
   /* eslint-disable fb-www/should-use-class */
-  // $FlowFixMe index signature
-  FbtResultBase.prototype[methodName] = function(...args) {
+  // $FlowFixMe[prop-missing] index signature
+  FbtResultBase.prototype[methodName] = function (...args) {
     this.__errorListener?.onStringMethodUsed?.(methodName);
-    // $FlowFixMe Mock stringish methods
+    // $FlowFixMe[incompatible-type] Mock stringish methods
+    // $FlowFixMe[prop-missing] Mock stringish methods
     return String.prototype[methodName].apply(this, args);
   };
   /* eslint-enable fb-www/should-use-class */

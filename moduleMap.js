@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
+ * @noflow
+ * @emails oncall+internationalization
  */
 'use strict';
 

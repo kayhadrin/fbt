@@ -5,10 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
+ * @noflow
+ * @emails oncall+internationalization
  */
 
 module.exports = {
   RequireCheck: require('./RequireCheck'),
-  SyntaxPlugins: require('./SyntaxPlugins'),
   TestUtil: require('./TestUtil'),
 };

@@ -2,6 +2,8 @@
  * Copyright 2004-present Facebook. All Rights Reserved.
  *
  * @format
+ * @noflow
+ * @emails oncall+internationalization
  */
 
 import './css/root.css';

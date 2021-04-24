@@ -6,6 +6,7 @@
  *
  * @flow strict-local
  * @format
+ * @emails oncall+internationalization
  */
 
 import type {FbtHookRegistrations} from 'FbtHooks';
@@ -19,7 +20,7 @@ const IntlViewerContext = require('IntlViewerContext'); // default VC
 const getFbsResult = require('getFbsResult');
 
 export type FbtInitInput = {
-  hooks: ?FbtHookRegistrations,
+  hooks?: ?FbtHookRegistrations,
   translations: TranslationDict,
 };
 
