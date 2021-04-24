@@ -50,7 +50,9 @@ trap cleanup_repo EXIT
 
 pushd "packages/$package"
 
-currentNpmVersion=$(cat ./package.json | jq .version -r)
+package=$(jq -r .name ./package.json)
+
+currentNpmVersion=$(jq .version -r ./package.json)
 if [[ "$newVersion" == "$npmBetaTag" ]]; then
     newVersion=$currentNpmVersion-$npmBetaTag
 fi
